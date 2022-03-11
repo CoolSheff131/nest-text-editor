@@ -6,9 +6,9 @@ export class AppGateway {
 
   @WebSocketServer() wss: Server
 
-  @SubscribeMessage('msg')
+  @SubscribeMessage('msgToServer')
   handleMessage(client: Socket, payload: any): void {
-    this.wss.emit('a', payload)
+    this.wss.emit('msgFromServer', payload)
     //return {event: 'a',data: 'Hello world'};
   }
 }
