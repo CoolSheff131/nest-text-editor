@@ -12,17 +12,19 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger();
+
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
+    this.logger.debug(req);
     return this.authService.login(req.user);
   }
-  private readonly logger = new Logger();
+
   @Post('register')
   register(@Body() dto: CreateUserDto) {
-    this.logger.debug(dto);
     return this.authService.register(dto);
   }
 }
