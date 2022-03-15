@@ -1,9 +1,11 @@
+import { TextEntity } from 'src/text/entities/text.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('users')
@@ -19,6 +21,9 @@ export class UserEntity {
 
   @Column({ nullable: true })
   password?: string;
+
+  @OneToMany(() => TextEntity, (text) => text.user)
+  texts: TextEntity[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

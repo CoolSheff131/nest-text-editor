@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { UserEntity } from './user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TextModule } from './text/text.module';
+import { TextEntity } from './text/entities/text.entity';
 
 @Module({
   imports: [
@@ -17,11 +19,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'texteditor',
       password: 'texteditor',
       database: 'texteditor',
-      entities: [UserEntity],
+      entities: [UserEntity, TextEntity],
       synchronize: true,
     }),
     UserModule,
     AuthModule,
+    TextModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway, RoomsService],
