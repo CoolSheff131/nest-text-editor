@@ -1,7 +1,18 @@
-import { Body, Controller, Get, Logger, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { CreateTextDto } from './dto/create-text.dto';
+import { UpdateTextDto } from './dto/update-text.dto';
 import { TextService } from './text.service';
 
 @Controller('text')
@@ -21,8 +32,23 @@ export class TextController {
     return this.textService.create(createTextDto, userId);
   }
 
-  @Get('me')
-  getMe() {
-    return 'this.textService.getMine(userId)';
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.textService.findById(+id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @User() userId: number,
+    @Body() updateTextDto: UpdateTextDto,
+  ) {
+    return this.textService.update(id, updateTextDto, userId);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.textService.remove(+id);
   }
 }
