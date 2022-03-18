@@ -16,8 +16,12 @@ export class TextService {
     return find;
   }
 
-  async remove(arg0: number) {
-    throw new Error('Method not implemented.');
+  async remove(id: number) {
+    const find = await this.textRepository.findOne(id);
+    if (!find) {
+      throw new NotFoundException('Текст не найден');
+    }
+    return this.textRepository.delete(id);
   }
   private readonly logger = new Logger();
 
