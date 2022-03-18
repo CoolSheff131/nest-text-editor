@@ -27,6 +27,6 @@ import { TextEntity } from './text/entities/text.entity';
     TextModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway, RoomsService],
+  providers: [AppService],
 })
 export class AppModule {}

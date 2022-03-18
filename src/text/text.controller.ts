@@ -32,6 +32,11 @@ export class TextController {
     return this.textService.create(createTextDto, userId);
   }
 
+  @Get(':id/edit')
+  findOneToEdit(@Param('id') id: string) {
+    return this.textService.findByIdToEdit(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.textService.findById(+id);
