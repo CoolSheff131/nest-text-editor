@@ -9,6 +9,7 @@ import { UserEntity } from './user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TextModule } from './text/text.module';
 import { TextEntity } from './text/entities/text.entity';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TextEntity } from './text/entities/text.entity';
     UserModule,
     AuthModule,
     TextModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

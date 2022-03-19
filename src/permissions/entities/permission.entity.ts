@@ -1,31 +1,25 @@
-import { Permission } from 'src/permissions/entities/permission.entity';
+import { TextEntity } from 'src/text/entities/text.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
-  Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('texts')
-export class TextEntity {
+export class Permission {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  title: string;
+  permission: string;
 
-  @Column()
-  content: string;
-
-  @ManyToOne(() => UserEntity, (user) => user.texts)
+  @ManyToOne(() => UserEntity, (user) => user.permissions)
   user: UserEntity;
 
-  @OneToMany(() => Permission, (permission) => permission.text)
-  permission: Permission;
+  @ManyToOne(() => TextEntity, (text) => text.permission)
+  text: TextEntity;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
