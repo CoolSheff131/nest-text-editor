@@ -36,13 +36,11 @@ export class AuthService {
   private readonly logger = new Logger();
   async register(dto: CreateUserDto) {
     try {
-      this.logger.debug(dto);
       const { password, ...user } = await this.userService.create({
         email: dto.email,
         fullname: dto.fullname,
         password: dto.password,
       });
-      this.logger.debug(user);
       return {
         ...user,
         token: this.generateJwtToken(user),

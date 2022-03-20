@@ -15,7 +15,6 @@ export class UserService {
   ) {}
   private readonly logger = new Logger();
   create(createUserDto: CreateUserDto) {
-    this.logger.debug('CreateUserDto: ', createUserDto);
     return this.repository.save(createUserDto);
   }
 

@@ -32,9 +32,10 @@ export class TextController {
     return this.textService.create(createTextDto, userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id/edit')
-  findOneToEdit(@Param('id') id: string) {
-    return this.textService.findByIdToEdit(id);
+  findOneToEdit(@User() userId: number, @Param('id') id: string) {
+    return this.textService.findByIdToEdit(id, userId);
   }
 
   @Get(':id')

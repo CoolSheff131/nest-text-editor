@@ -1,5 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PermissionEntity } from 'src/permissions/entities/permission.entity';
 import { RoomsService } from 'src/rooms/rooms.service';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -14,7 +15,8 @@ export class TextService {
     private textRepository: Repository<TextEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-
+    @InjectRepository(PermissionEntity)
+    private permissionRepository: Repository<PermissionEntity>,
     private roomService: RoomsService,
   ) {}
 
@@ -25,15 +27,32 @@ export class TextService {
     }
     return find;
   }
-  async findByIdToEdit(id: string) {
-    const textData = await this.textRepository.findOne(id);
+  async findByIdToEdit(textId: string, userId: number) {
+    const textData = await this.textRepository.findOne(textId, {
+      relations: ['user'],
+    });
+
     if (!textData) {
       throw new NotFoundException('Текст не найден');
     }
-    const roomData = this.roomService.getRoomData(id);
+
+    if (textData.user.id != userId) {
+      const permission = await this.permissionRepository.findOne({
+        where: { user: { id: userId }, text: { id: textId } },
+        relations: ['user', 'text'],
+      });
+      if (!permission) {
+        throw new NotFoundException('Текст не найден');
+      }
+
+      if (permission.permission !== 'edit') {
+        throw new NotFoundException('Текст не найден');
+      }
+    }
+    const roomData = this.roomService.getRoomData(textId);
     if (!roomData.data) {
       roomData.data = textData;
-      this.roomService.setRoomData(id, textData);
+      this.roomService.setRoomData(textId, textData);
     }
     return roomData;
   }
@@ -68,7 +87,6 @@ export class TextService {
   }
 
   async getMine(userId: number) {
-    this.logger.debug(userId);
     return await this.textRepository.find({
       select: ['id', 'title', 'updatedAt'],
       relations: ['user'],
