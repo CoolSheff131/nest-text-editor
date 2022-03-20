@@ -1,15 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { RightAssignmentTokensService } from './right-assignment-tokens.service';
 import { CreateRightAssignmentTokenDto } from './dto/create-right-assignment-token.dto';
 import { UpdateRightAssignmentTokenDto } from './dto/update-right-assignment-token.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { User } from 'src/decorators/user.decorator';
 
 @Controller('right-assignment-tokens')
 export class RightAssignmentTokensController {
-  constructor(private readonly rightAssignmentTokensService: RightAssignmentTokensService) {}
+  constructor(
+    private readonly rightAssignmentTokensService: RightAssignmentTokensService,
+  ) {}
 
+  @UseGuards(JwtAuthGuard)
+  @Get('activate/:id')
+  activate(@User() userId: number, @Param('id') id: number) {
+    this.rightAssignmentTokensService.activate(userId, id);
+  }
   @Post()
   create(@Body() createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {
-    return this.rightAssignmentTokensService.create(createRightAssignmentTokenDto);
+    return this.rightAssignmentTokensService.create(
+      createRightAssignmentTokenDto,
+    );
   }
 
   @Get()
@@ -23,8 +43,14 @@ export class RightAssignmentTokensController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRightAssignmentTokenDto: UpdateRightAssignmentTokenDto) {
-    return this.rightAssignmentTokensService.update(+id, updateRightAssignmentTokenDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateRightAssignmentTokenDto: UpdateRightAssignmentTokenDto,
+  ) {
+    return this.rightAssignmentTokensService.update(
+      +id,
+      updateRightAssignmentTokenDto,
+    );
   }
 
   @Delete(':id')

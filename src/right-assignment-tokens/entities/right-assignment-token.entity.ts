@@ -17,7 +17,7 @@ export class RightAssignmentTokenEntity {
   token: string;
 
   @OneToOne(() => TextEntity)
-  @JoinColumn()
+  @JoinColumn({ name: 'textId' })
   text: TextEntity;
 
   @Column()

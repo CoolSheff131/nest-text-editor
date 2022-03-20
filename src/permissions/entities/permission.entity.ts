@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,6 +23,7 @@ export class PermissionEntity {
   user: UserEntity;
 
   @ManyToOne(() => TextEntity, (text) => text.permissions)
+  @JoinColumn({ name: 'textId' })
   text: TextEntity;
 
   @CreateDateColumn({ type: 'timestamp' })

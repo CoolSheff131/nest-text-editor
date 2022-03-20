@@ -20,12 +20,16 @@ export class PermissionsService {
     return this.repository.find();
   }
 
-  findOne(id: number) {
-    return this.repository.findOne(id);
+  async findOne(id: number) {
+    return await this.repository.findOne(id);
   }
 
   update(id: number, updatePermissionDto: UpdatePermissionDto) {
-    return this.repository.update(id, updatePermissionDto);
+    return this.repository.update(id, {
+      permission: updatePermissionDto.permission,
+      text: { id: updatePermissionDto.textId },
+      user: { id: updatePermissionDto.userId },
+    });
   }
 
   remove(id: number) {
