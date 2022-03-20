@@ -10,6 +10,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TextModule } from './text/text.module';
 import { TextEntity } from './text/entities/text.entity';
 import { PermissionsModule } from './permissions/permissions.module';
+import { PermissionEntity } from './permissions/entities/permission.entity';
+import { RightAssignmentTokensModule } from './right-assignment-tokens/right-assignment-tokens.module';
+import { RightAssignmentTokenEntity } from './right-assignment-tokens/entities/right-assignment-token.entity';
 
 @Module({
   imports: [
@@ -20,13 +23,19 @@ import { PermissionsModule } from './permissions/permissions.module';
       username: 'texteditor',
       password: 'texteditor',
       database: 'texteditor',
-      entities: [UserEntity, TextEntity],
+      entities: [
+        UserEntity,
+        TextEntity,
+        PermissionEntity,
+        RightAssignmentTokenEntity,
+      ],
       synchronize: true,
     }),
     UserModule,
     AuthModule,
     TextModule,
     PermissionsModule,
+    RightAssignmentTokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],

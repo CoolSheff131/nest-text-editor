@@ -3,22 +3,25 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
+  Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Permission } from './Permission';
 
-export class Permission {
+@Entity('permissions')
+export class PermissionEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  permission: string;
+  permission: Permission;
 
   @ManyToOne(() => UserEntity, (user) => user.permissions)
   user: UserEntity;
 
-  @ManyToOne(() => TextEntity, (text) => text.permission)
+  @ManyToOne(() => TextEntity, (text) => text.permissions)
   text: TextEntity;
 
   @CreateDateColumn({ type: 'timestamp' })

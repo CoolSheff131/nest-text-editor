@@ -1,4 +1,4 @@
-import { Permission } from 'src/permissions/entities/permission.entity';
+import { PermissionEntity } from 'src/permissions/entities/permission.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -24,8 +24,8 @@ export class TextEntity {
   @ManyToOne(() => UserEntity, (user) => user.texts)
   user: UserEntity;
 
-  @OneToMany(() => Permission, (permission) => permission.text)
-  permission: Permission;
+  @OneToMany(() => PermissionEntity, (permission) => permission.text)
+  permissions: PermissionEntity[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
