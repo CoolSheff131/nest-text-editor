@@ -23,7 +23,9 @@ export class RightAssignmentTokensService {
   }
 
   async activate(userId: number, tokenId: number) {
-    const find = await this.rightTokensRepository.findOne(tokenId);
+    const find = await this.rightTokensRepository.findOne(tokenId, {
+      relations: ['text'],
+    });
     if (!find) {
       throw new NotFoundException('Токен не найден');
     }

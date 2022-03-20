@@ -13,7 +13,9 @@ export class RightAssignmentTokenEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   token: string;
 
   @OneToOne(() => TextEntity)
