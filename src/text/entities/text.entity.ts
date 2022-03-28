@@ -24,7 +24,9 @@ export class TextEntity {
   @ManyToOne(() => UserEntity, (user) => user.texts)
   user: UserEntity;
 
-  @OneToMany(() => PermissionEntity, (permission) => permission.text)
+  @OneToMany(() => PermissionEntity, (permission) => permission.text, {
+    onDelete: 'CASCADE',
+  })
   permissions: PermissionEntity[];
 
   @CreateDateColumn({ type: 'timestamp' })

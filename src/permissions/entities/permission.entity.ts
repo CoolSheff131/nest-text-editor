@@ -22,7 +22,9 @@ export class PermissionEntity {
   @ManyToOne(() => UserEntity, (user) => user.permissions)
   user: UserEntity;
 
-  @ManyToOne(() => TextEntity, (text) => text.permissions)
+  @ManyToOne(() => TextEntity, (text) => text.permissions, {
+    onDelete: 'CASCADE',
+  })
   text: TextEntity;
 
   @CreateDateColumn({ type: 'timestamp' })
