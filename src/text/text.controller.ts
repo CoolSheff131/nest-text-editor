@@ -27,6 +27,12 @@ export class TextController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/shared')
+  getShared(@User() userId: number) {
+    return this.textService.shared(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@User() userId: number, @Body() createTextDto: CreateTextDto) {
     return this.textService.create(createTextDto, userId);

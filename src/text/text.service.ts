@@ -20,6 +20,24 @@ export class TextService {
     private roomService: RoomsService,
   ) {}
 
+  async shared(userId: number) {
+    // const myPermissions = await this.permissionRepository.find({
+    //   select: ['text', 'user', 'permission'],
+    //   relations: ['text', 'user'],
+    //   where: { user: { id: userId } },
+    // });
+    const myPermissions = await this.permissionRepository
+      .createQueryBuilder('perm')
+      .select(['perm.text', 'perm.user', 'perm.permission'])
+      .leftJoinAndSelect('perm.text', 'text')
+      .leftJoinAndSelect('perm.user', 'user')
+      .where('perm.user = :userId', { userId })
+      .getMany();
+    console.log(myPermissions);
+
+    return myPermissions;
+  }
+
   async findById(id: number) {
     const find = await this.textRepository.findOne(id);
     if (!find) {

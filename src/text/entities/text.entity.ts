@@ -21,7 +21,7 @@ export class TextEntity {
   @Column()
   content: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.texts)
+  @ManyToOne(() => UserEntity, (user) => user.texts, { eager: true })
   user: UserEntity;
 
   @OneToMany(() => PermissionEntity, (permission) => permission.text, {
