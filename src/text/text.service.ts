@@ -88,7 +88,7 @@ export class TextService {
 
   async getMine(userId: number) {
     return await this.textRepository.find({
-      select: ['id', 'title', 'updatedAt'],
+      select: ['id', 'title', 'createdAt', 'updatedAt'],
       relations: ['user'],
       where: { user: { id: userId } },
     });
