@@ -21,19 +21,13 @@ export class TextService {
   ) {}
 
   async shared(userId: number) {
-    // const myPermissions = await this.permissionRepository.find({
-    //   select: ['text', 'user', 'permission'],
-    //   relations: ['text', 'user'],
-    //   where: { user: { id: userId } },
-    // });
     const myPermissions = await this.permissionRepository
       .createQueryBuilder('perm')
-      .select(['perm.text', 'perm.user', 'perm.permission'])
       .leftJoinAndSelect('perm.text', 'text')
       .leftJoinAndSelect('perm.user', 'user')
       .where('perm.user = :userId', { userId })
+      .select(['text', 'text.user', 'perm.permission'])
       .getMany();
-    console.log(myPermissions);
 
     return myPermissions;
   }
