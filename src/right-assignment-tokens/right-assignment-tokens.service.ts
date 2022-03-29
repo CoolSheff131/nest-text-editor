@@ -13,7 +13,7 @@ export class RightAssignmentTokensService {
       where: { text: { id } },
     });
     const links = tokens.map((token) => {
-      return `http://localhost:3000/right-assignment-tokens/activate/${token.id}`;
+      return `${token.id}`;
     });
 
     return links;
@@ -70,7 +70,9 @@ export class RightAssignmentTokensService {
     return this.rightTokensRepository.update(id, updateRightAssignmentTokenDto);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
+    console.log(id);
+
     const find = await this.rightTokensRepository.findOne(id);
     if (!find) {
       throw new NotFoundException('Токен не найден');

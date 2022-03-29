@@ -60,6 +60,6 @@ export class RightAssignmentTokensController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.rightAssignmentTokensService.remove(+id);
+    return this.rightAssignmentTokensService.remove(id);
   }
 }
