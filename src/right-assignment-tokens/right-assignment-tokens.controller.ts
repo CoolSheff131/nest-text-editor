@@ -37,6 +37,11 @@ export class RightAssignmentTokensController {
     return this.rightAssignmentTokensService.findAll();
   }
 
+  @Get('text/:id')
+  findTokensForText(@Param('id') id: string) {
+    return this.rightAssignmentTokensService.findForText(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.rightAssignmentTokensService.findOne(+id);

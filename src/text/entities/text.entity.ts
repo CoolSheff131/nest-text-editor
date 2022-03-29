@@ -1,4 +1,5 @@
 import { PermissionEntity } from 'src/permissions/entities/permission.entity';
+import { RightAssignmentTokenEntity } from 'src/right-assignment-tokens/entities/right-assignment-token.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -28,6 +29,15 @@ export class TextEntity {
     onDelete: 'CASCADE',
   })
   permissions: PermissionEntity[];
+
+  @OneToMany(
+    () => RightAssignmentTokenEntity,
+    (rightAssignmentTokenEntity) => rightAssignmentTokenEntity.text,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  rightAssignmentTokenEntity: RightAssignmentTokenEntity[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

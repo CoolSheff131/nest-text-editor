@@ -6,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity('right_assignment_tokens')
@@ -18,7 +20,7 @@ export class RightAssignmentTokenEntity {
   })
   token: string;
 
-  @OneToOne(() => TextEntity)
+  @ManyToOne(() => TextEntity)
   @JoinColumn({ name: 'textId' })
   text: TextEntity;
 

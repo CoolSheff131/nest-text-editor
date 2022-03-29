@@ -8,6 +8,16 @@ import { RightAssignmentTokenEntity } from './entities/right-assignment-token.en
 
 @Injectable()
 export class RightAssignmentTokensService {
+  async findForText(id: string) {
+    const tokens = await this.rightTokensRepository.find({
+      where: { text: { id } },
+    });
+    const links = tokens.map((token) => {
+      return `http://localhost:3000/right-assignment-tokens/activate/${token.id}`;
+    });
+
+    return links;
+  }
   constructor(
     @InjectRepository(RightAssignmentTokenEntity)
     private rightTokensRepository: Repository<RightAssignmentTokenEntity>,
@@ -16,6 +26,8 @@ export class RightAssignmentTokensService {
   ) {}
 
   create(createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {
+    console.log(createRightAssignmentTokenDto);
+
     return this.rightTokensRepository.save({
       permission: createRightAssignmentTokenDto.permission,
       text: { id: createRightAssignmentTokenDto.textId },
