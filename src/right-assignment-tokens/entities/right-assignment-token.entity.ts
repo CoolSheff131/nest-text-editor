@@ -20,7 +20,7 @@ export class RightAssignmentTokenEntity {
   })
   token: string;
 
-  @ManyToOne(() => TextEntity)
+  @ManyToOne(() => TextEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'textId' })
   text: TextEntity;
 

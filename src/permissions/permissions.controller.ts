@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
@@ -17,13 +25,21 @@ export class PermissionsController {
     return this.permissionsService.findAll();
   }
 
+  @Get('text/:textId')
+  findbyText(@Param('textId') textId: string) {
+    return this.permissionsService.findByText(textId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.permissionsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePermissionDto: UpdatePermissionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePermissionDto: UpdatePermissionDto,
+  ) {
     return this.permissionsService.update(+id, updatePermissionDto);
   }
 

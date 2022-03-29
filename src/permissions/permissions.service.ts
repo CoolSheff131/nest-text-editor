@@ -7,6 +7,12 @@ import { PermissionEntity } from 'src/permissions/entities/permission.entity';
 
 @Injectable()
 export class PermissionsService {
+  async findByText(textId: string) {
+    return await this.repository.find({
+      relations: ['user'],
+      where: { text: { id: textId } },
+    });
+  }
   constructor(
     @InjectRepository(PermissionEntity)
     private repository: Repository<PermissionEntity>,
