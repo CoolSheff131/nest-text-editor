@@ -12,11 +12,7 @@ export class RightAssignmentTokensService {
     const tokens = await this.rightTokensRepository.find({
       where: { text: { id } },
     });
-    const links = tokens.map((token) => {
-      return `${token.id}`;
-    });
-
-    return links;
+    return tokens;
   }
   constructor(
     @InjectRepository(RightAssignmentTokenEntity)
