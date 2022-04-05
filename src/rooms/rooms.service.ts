@@ -31,12 +31,17 @@ export class RoomsService {
       let user = await this.userService.findById(userId);
       roomData.users.push(user);
     }
+    console.log(roomData);
+
     return roomData;
   }
 
   joinUser(id: string, user: UserEntity) {
     const room = this.findRoom(id);
+    //console.log(user);
+
     room.usersId.add(user.id);
+    //console.log(room);
   }
 
   leftUser(id: string, leftUser: UserEntity) {

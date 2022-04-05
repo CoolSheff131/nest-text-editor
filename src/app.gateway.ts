@@ -26,17 +26,25 @@ export class AppGateway {
   }
 
   @SubscribeMessage('joinRoom')
-  handleJoin(client: Socket, message: { textId: string; user: UserEntity }) {
+  async handleJoin(
+    client: Socket,
+    message: { textId: string; user: UserEntity },
+  ) {
     client.join(message.textId);
 
     this.roomsService.joinUser(message.textId, message.user);
-    this.wss.to(message.textId).emit('joinedRoom', message.user);
+    const roomData = await this.roomsService.getRoomData(message.textId);
+    this.wss.to(message.textId).emit('joinedRoom', roomData.users);
   }
 
   @SubscribeMessage('leaveRoom')
-  handleLeft(client: Socket, message: { textId: string; user: UserEntity }) {
+  async handleLeft(
+    client: Socket,
+    message: { textId: string; user: UserEntity },
+  ) {
     client.leave(message.textId);
     this.roomsService.leftUser(message.textId, message.user);
-    this.wss.to(message.textId).emit('leftRoom', message.user);
+    const roomData = await this.roomsService.getRoomData(message.textId);
+    this.wss.to(message.textId).emit('leftRoom', roomData.users);
   }
 }
