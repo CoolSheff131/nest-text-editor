@@ -7,14 +7,20 @@ import {
   Param,
   Patch,
   Post,
+  Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { CreateTextDto } from './dto/create-text.dto';
 import { UpdateTextDto } from './dto/update-text.dto';
 import { TextService } from './text.service';
-
+import { v4 as uuidv4 } from 'uuid';
+import path, { join } from 'path';
 @Controller('text')
 export class TextController {
   private readonly logger = new Logger();
@@ -62,5 +68,29 @@ export class TextController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.textService.remove(+id);
+  }
+
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/textImages',
+        filename: (req, file, cb) => {
+          const extension = file.originalname.split('.').pop();
+          const filename = file.originalname.replace(/\s/g, '') + uuidv4();
+          cb(null, `${filename}.${extension}`);
+        },
+      }),
+    }),
+  )
+  uploadFile(@UploadedFile() file) {
+    console.log(file);
+
+    return { url: `http://localhost:3000/text/image/${file.filename}` };
+  }
+
+  @Get('image/:imagename')
+  getImage(@Param('imagename') imagename, @Res() res) {
+    return res.sendFile(join(process.cwd(), 'uploads/textImages/' + imagename));
   }
 }
