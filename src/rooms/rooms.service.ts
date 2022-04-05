@@ -4,7 +4,6 @@ import { Injectable, Logger } from '@nestjs/common';
 export class RoomsService {
   rooms = {};
   logger = new Logger();
-
   getRoomData(id: string) {
     if (this.rooms[id] === undefined) {
       this.rooms[id] = { data: undefined, users: [] };

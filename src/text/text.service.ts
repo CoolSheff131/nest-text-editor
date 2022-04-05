@@ -49,20 +49,20 @@ export class TextService {
     }
 
     if (textData.user.id != userId) {
+      // Проверяем доступ к тексту
       const permission = await this.permissionRepository.findOne({
         where: { user: { id: userId }, text: { id: textId } },
         relations: ['user', 'text'],
       });
-      if (!permission) {
-        throw new NotFoundException('Текст не найден');
-      }
-
-      if (permission.permission !== 'edit') {
+      if (!permission || permission.permission !== 'edit') {
         throw new NotFoundException('Текст не найден');
       }
     }
-    const roomData = this.roomService.getRoomData(textId);
+
+    const roomData = this.roomService.getRoomData(textId); //Берем данные из комнаты
+
     if (!roomData.data) {
+      // Если данных в комнате нет, ставим из бд
       roomData.data = textData;
       this.roomService.setRoomData(textId, textData);
     }
