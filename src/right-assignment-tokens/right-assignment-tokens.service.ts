@@ -22,8 +22,6 @@ export class RightAssignmentTokensService {
   ) {}
 
   create(createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {
-    console.log(createRightAssignmentTokenDto);
-
     return this.rightTokensRepository.save({
       permission: createRightAssignmentTokenDto.permission,
       text: { id: createRightAssignmentTokenDto.textId },
@@ -67,8 +65,6 @@ export class RightAssignmentTokensService {
   }
 
   async remove(id: string) {
-    console.log(id);
-
     const find = await this.rightTokensRepository.findOne(id);
     if (!find) {
       throw new NotFoundException('Токен не найден');

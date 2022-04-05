@@ -84,8 +84,6 @@ export class TextController {
     }),
   )
   uploadFile(@UploadedFile() file) {
-    console.log(file);
-
     return { url: `http://localhost:3000/text/image/${file.filename}` };
   }
 

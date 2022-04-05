@@ -19,6 +19,7 @@ export class RoomsService {
     let findedRoom: Room = this.rooms.find((room) => room.id === id);
     if (!findedRoom) {
       findedRoom = { id, data: undefined, usersId: new Set() };
+      this.rooms.push(findedRoom);
     }
     return findedRoom;
   }
@@ -46,5 +47,6 @@ export class RoomsService {
   setRoomData(id: string, data: any) {
     const room = this.findRoom(id);
     room.data = data;
+    return room;
   }
 }
