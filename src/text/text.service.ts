@@ -59,7 +59,7 @@ export class TextService {
       }
     }
 
-    const roomData = this.roomService.getRoomData(textId); //Берем данные из комнаты
+    const roomData = await this.roomService.getRoomData(textId); //Берем данные из комнаты
 
     if (!roomData.data) {
       // Если данных в комнате нет, ставим из бд

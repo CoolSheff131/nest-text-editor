@@ -1,36 +1,50 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { TextEntity } from 'src/text/entities/text.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
+
+interface Room {
+  id: string;
+  data: TextEntity;
+  usersId: Set<number>;
+}
 
 @Injectable()
 export class RoomsService {
-  rooms = {};
+  rooms: Room[] = [];
   logger = new Logger();
-  getRoomData(id: string) {
-    if (this.rooms[id] === undefined) {
-      this.rooms[id] = { data: undefined, users: [] };
+  constructor(private readonly userService: UserService) {}
+
+  findRoom(id: string): Room {
+    let findedRoom: Room = this.rooms.find((room) => room.id === id);
+    if (!findedRoom) {
+      findedRoom = { id, data: undefined, usersId: new Set() };
     }
-    return this.rooms[id];
+    return findedRoom;
   }
 
-  joinUser(id: string, user: any) {
-    if (this.rooms[id] === undefined) {
-      this.rooms[id] = { data: undefined, users: [] };
+  async getRoomData(id: string) {
+    const { usersId, ...room } = this.findRoom(id);
+    let roomData = { ...room, users: [] };
+    for (let userId of usersId) {
+      let user = await this.userService.findById(userId);
+      roomData.users.push(user);
     }
-    this.rooms[id].users.push(user);
+    return roomData;
   }
 
-  leftUser(id: string, leftUser: any) {
-    if (this.rooms[id] === undefined) {
-      this.rooms[id] = { data: undefined, users: [] };
-    }
-    this.rooms[id].users = this.rooms[id].users.filter(
-      (user) => user.id !== leftUser.id,
-    );
+  joinUser(id: string, user: UserEntity) {
+    const room = this.findRoom(id);
+    room.usersId.add(user.id);
+  }
+
+  leftUser(id: string, leftUser: UserEntity) {
+    let room = this.findRoom(id);
+    room.usersId.delete(leftUser.id);
   }
 
   setRoomData(id: string, data: any) {
-    if (this.rooms[id] === undefined) {
-      this.rooms[id] = { data: undefined, users: [] };
-    }
-    this.rooms[id].data = data;
+    const room = this.findRoom(id);
+    room.data = data;
   }
 }

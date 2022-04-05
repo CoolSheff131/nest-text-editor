@@ -7,11 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { RoomsService } from './rooms/rooms.service';
-
-interface User {
-  fullname: string;
-  id: string;
-}
+import { UserEntity } from './user/entities/user.entity';
 
 @WebSocketGateway({ cors: true })
 export class AppGateway {
@@ -30,7 +26,7 @@ export class AppGateway {
   }
 
   @SubscribeMessage('joinRoom')
-  handleJoin(client: Socket, message: { textId: string; user: User }) {
+  handleJoin(client: Socket, message: { textId: string; user: UserEntity }) {
     client.join(message.textId);
 
     this.roomsService.joinUser(message.textId, message.user);
@@ -38,7 +34,7 @@ export class AppGateway {
   }
 
   @SubscribeMessage('leaveRoom')
-  handleLeft(client: Socket, message: { textId: string; user: User }) {
+  handleLeft(client: Socket, message: { textId: string; user: UserEntity }) {
     client.leave(message.textId);
     this.roomsService.leftUser(message.textId, message.user);
     this.wss.to(message.textId).emit('leftRoom', message.user);
