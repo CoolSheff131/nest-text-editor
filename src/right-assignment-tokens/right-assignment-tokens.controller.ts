@@ -23,7 +23,7 @@ export class RightAssignmentTokensController {
   @UseGuards(JwtAuthGuard)
   @Get('activate/:id')
   activate(@User() userId: number, @Param('id') id: number) {
-    this.rightAssignmentTokensService.activate(userId, id);
+    return this.rightAssignmentTokensService.activate(userId, id);
   }
   @Post()
   create(@Body() createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {

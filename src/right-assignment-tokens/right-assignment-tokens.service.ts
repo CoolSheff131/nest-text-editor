@@ -1,6 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PermissionEntity } from 'src/permissions/entities/permission.entity';
+import { TextEntity } from 'src/text/entities/text.entity';
 import { Repository } from 'typeorm';
 import { CreateRightAssignmentTokenDto } from './dto/create-right-assignment-token.dto';
 import { UpdateRightAssignmentTokenDto } from './dto/update-right-assignment-token.dto';
@@ -19,6 +25,8 @@ export class RightAssignmentTokensService {
     private rightTokensRepository: Repository<RightAssignmentTokenEntity>,
     @InjectRepository(PermissionEntity)
     private permissionRepository: Repository<PermissionEntity>,
+    @InjectRepository(TextEntity)
+    private textRepository: Repository<TextEntity>,
   ) {}
 
   create(createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {
@@ -34,6 +42,26 @@ export class RightAssignmentTokensService {
     });
     if (!find) {
       throw new NotFoundException('Токен не найден');
+    }
+
+    if (find.text.user.id == userId) {
+      throw new HttpException(
+        'Пользователь владеет текстом!',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    const permission = await this.permissionRepository.find({
+      where: {
+        user: userId,
+        text: find.text,
+      },
+    });
+
+    if (permission) {
+      throw new HttpException(
+        'У вас уже активировано разрешение',
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     this.permissionRepository.save({

@@ -4,10 +4,15 @@ import { RightAssignmentTokensController } from './right-assignment-tokens.contr
 import { RightAssignmentTokenEntity } from './entities/right-assignment-token.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PermissionEntity } from 'src/permissions/entities/permission.entity';
+import { TextEntity } from 'src/text/entities/text.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([RightAssignmentTokenEntity, PermissionEntity]),
+    TypeOrmModule.forFeature([
+      RightAssignmentTokenEntity,
+      PermissionEntity,
+      TextEntity,
+    ]),
   ],
   controllers: [RightAssignmentTokensController],
   providers: [RightAssignmentTokensService],
