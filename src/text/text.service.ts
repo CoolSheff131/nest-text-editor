@@ -20,6 +20,12 @@ export class TextService {
     private roomService: RoomsService,
   ) {}
 
+  async uploadTextPreview(id: string, file: any) {
+    const url = `http://localhost:3000/text/${id}/preview/${file.filename}`;
+    this.textRepository.update(id, { previewUrl: url });
+    return { url };
+  }
+
   async shared(userId: number) {
     const myPermissions = await this.permissionRepository
       .createQueryBuilder('perm')

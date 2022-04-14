@@ -70,6 +70,32 @@ export class TextController {
     return this.textService.remove(+id);
   }
 
+  @Post(':id/preview')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/preview',
+        filename: (req, file, cb) => {
+          console.log(file);
+
+          const extension = 'png';
+          const filename = file.originalname.replace(/\s/g, '') + uuidv4();
+          cb(null, `${filename}.${extension}`);
+        },
+      }),
+    }),
+  )
+  uploadTextPreview(@Param('id') id: string, @UploadedFile() file) {
+    console.log(file);
+    return this.textService.uploadTextPreview(id, file);
+  }
+
+  @Get(':id/preview/:imagename')
+  getTextPreview(@Param('imagename') imagename, @Param('id') id, @Res() res) {
+    console.log(imagename);
+    return res.sendFile(join(process.cwd(), 'uploads/preview/' + imagename));
+  }
+
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {

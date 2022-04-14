@@ -22,6 +22,13 @@ export class TextEntity {
   @Column()
   content: string;
 
+  @Column({
+    type: 'text',
+    unique: true,
+    nullable: true,
+  })
+  previewUrl: string | null;
+
   @ManyToOne(() => UserEntity, (user) => user.texts, { eager: true })
   user: UserEntity;
 
