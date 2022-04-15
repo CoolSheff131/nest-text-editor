@@ -123,7 +123,7 @@ export class TextService {
     });
 
     const mineWithPermission = mine.map((text) => {
-      return { text, permission: 'edit' };
+      return { text, permission: 'owner' };
     });
 
     const shared = await this.shared(userId);
