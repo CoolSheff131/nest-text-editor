@@ -28,8 +28,8 @@ export class TextController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  getMine(@User() userId: number) {
-    return this.textService.getMine(userId);
+  getAll(@User() userId: number) {
+    return this.textService.getAll(userId);
   }
 
   @UseGuards(JwtAuthGuard)
