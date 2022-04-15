@@ -32,15 +32,20 @@ export class TextService {
       .leftJoinAndSelect('perm.text', 'text')
       .leftJoinAndSelect('perm.user', 'user')
       .where('perm.user = :userId', { userId })
-      .select(['text', 'user', 'perm.permission'])
+      .select(['text', 'text.user', 'perm.permission'])
       .getMany();
+    const textIds = myPermissions.map((perm) => {
+      return perm.text.id;
+    });
+    console.log(textIds);
+
+    const texts = await this.textRepository.findByIds(textIds);
+
     return myPermissions.map((perm) => {
+      const text = texts.find((tex) => tex.id == perm.text.id);
       return {
         permission: perm.permission,
-        text: {
-          ...perm.text,
-          user: perm.user,
-        },
+        text,
       };
     });
   }
@@ -123,8 +128,6 @@ export class TextService {
 
     const shared = await this.shared(userId);
     const all = [...shared, ...mineWithPermission];
-    console.log(shared);
-
     return all;
   }
 }
