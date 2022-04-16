@@ -47,6 +47,9 @@ export class RoomsService {
   leftUser(id: string, leftUser: UserEntity) {
     let room = this.findRoom(id);
     room.usersId.delete(leftUser.id);
+    if (room.usersId.size == 0) {
+      this.rooms = this.rooms.filter((r) => r.id !== room.id);
+    }
   }
 
   setRoomData(id: string, data: any) {
