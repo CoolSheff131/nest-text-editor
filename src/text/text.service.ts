@@ -65,16 +65,22 @@ export class TextService {
     if (!textData) {
       throw new NotFoundException('Текст не найден');
     }
-
+    let userPermission;
     if (textData.user.id != userId) {
       // Проверяем доступ к тексту
       const permission = await this.permissionRepository.findOne({
         where: { user: { id: userId }, text: { id: textId } },
         relations: ['user', 'text'],
       });
-      if (!permission || permission.permission !== 'edit') {
+      console.log(permission);
+
+      if (!permission) {
         throw new NotFoundException('Текст не найден');
+      } else {
+        userPermission = permission.permission;
       }
+    } else {
+      userPermission = 'owner';
     }
 
     const roomData = await this.roomService.getRoomData(textId); //Берем данные из комнаты
@@ -84,7 +90,7 @@ export class TextService {
       roomData.data = textData;
       this.roomService.setRoomData(textId, textData);
     }
-    return roomData;
+    return { ...roomData, userPermission };
   }
 
   async remove(id: number) {
