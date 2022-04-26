@@ -10,6 +10,13 @@ import { TextEntity } from './entities/text.entity';
 
 @Injectable()
 export class TextService {
+  async searchByName(userId: number, searchedName: string) {
+    const all = await this.getAll(userId);
+    const filtered = all.filter((text) =>
+      text.text.title.includes(searchedName),
+    );
+    return filtered;
+  }
   constructor(
     @InjectRepository(TextEntity)
     private textRepository: Repository<TextEntity>,

@@ -27,6 +27,12 @@ export class TextController {
   constructor(private readonly textService: TextService) {}
 
   @UseGuards(JwtAuthGuard)
+  @Get('/search/:searchedName')
+  search(@User() userId: number, @Param('searchedName') searchedName) {
+    return this.textService.searchByName(userId, searchedName);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get()
   getAll(@User() userId: number) {
     return this.textService.getAll(userId);
