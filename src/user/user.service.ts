@@ -20,6 +20,12 @@ export class UserService {
     });
   }
 
+  deleteAvatar(userId: number) {
+    return this.repository.update(userId, {
+      avatarUrl: null,
+    });
+  }
+
   create(createUserDto: CreateUserDto) {
     return this.repository.save(createUserDto);
   }

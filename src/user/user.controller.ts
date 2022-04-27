@@ -47,6 +47,12 @@ export class UserController {
     return this.userService.uploadAvatar(userId, file);
   }
 
+  @Delete('deleteAvatar')
+  @UseGuards(JwtAuthGuard)
+  deleteAvatar(@User() userId: number) {
+    return this.userService.deleteAvatar(userId);
+  }
+
   @Get('avatar/:imagename')
   getAvatar(@Param('imagename') imagename, @Res() res) {
     return res.sendFile(
