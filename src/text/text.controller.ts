@@ -20,7 +20,7 @@ import { CreateTextDto } from './dto/create-text.dto';
 import { UpdateTextDto } from './dto/update-text.dto';
 import { TextService } from './text.service';
 import { v4 as uuidv4 } from 'uuid';
-import path, { join } from 'path';
+import { join } from 'path';
 @Controller('text')
 export class TextController {
   private readonly logger = new Logger();
