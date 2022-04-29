@@ -34,8 +34,6 @@ export class UserController {
       storage: diskStorage({
         destination: './uploads/userAvatars',
         filename: (req, file, cb) => {
-          console.log(file);
-
           const extension = 'png';
           const filename = file.originalname.replace(/\s/g, '') + uuidv4();
           cb(null, `${filename}.${extension}`);

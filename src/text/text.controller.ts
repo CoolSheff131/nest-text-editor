@@ -71,8 +71,9 @@ export class TextController {
     return this.textService.update(id, updateTextDto, userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@User() userId: number, @Param('id') id: string) {
     return this.textService.remove(+id);
   }
 
@@ -82,8 +83,6 @@ export class TextController {
       storage: diskStorage({
         destination: './uploads/preview',
         filename: (req, file, cb) => {
-          console.log(file);
-
           const extension = 'png';
           const filename = file.originalname.replace(/\s/g, '') + uuidv4();
           cb(null, `${filename}.${extension}`);
@@ -92,13 +91,11 @@ export class TextController {
     }),
   )
   uploadTextPreview(@Param('id') id: string, @UploadedFile() file) {
-    console.log(file);
     return this.textService.uploadTextPreview(id, file);
   }
 
   @Get(':id/preview/:imagename')
   getTextPreview(@Param('imagename') imagename, @Param('id') id, @Res() res) {
-    console.log(imagename);
     return res.sendFile(join(process.cwd(), 'uploads/preview/' + imagename));
   }
 

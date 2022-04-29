@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -6,6 +6,8 @@ import {
   WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { WsGuard } from './auth/guards/WsGuard';
 import { RoomsService } from './rooms/rooms.service';
 import { UserEntity } from './user/entities/user.entity';
 
@@ -15,6 +17,7 @@ export class AppGateway {
   constructor(private readonly roomsService: RoomsService) {}
   @WebSocketServer() wss: Server;
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('msgToServer')
   handleMessage(
     client: Socket,
@@ -25,6 +28,7 @@ export class AppGateway {
     //return {event: 'a',data: 'Hello world'};
   }
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('joinRoom')
   async handleJoin(
     client: Socket,
@@ -37,6 +41,7 @@ export class AppGateway {
     this.wss.to(message.textId).emit('joinedRoom', roomData.users);
   }
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('leaveRoom')
   async handleLeft(
     client: Socket,

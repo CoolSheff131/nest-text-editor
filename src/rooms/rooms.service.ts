@@ -31,7 +31,6 @@ export class RoomsService {
       let user = await this.userService.findById(userId);
       roomData.users.push(user);
     }
-    console.log(roomData);
 
     return roomData;
   }

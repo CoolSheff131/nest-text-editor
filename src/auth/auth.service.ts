@@ -33,7 +33,7 @@ export class AuthService {
       token: this.generateJwtToken(userData),
     };
   }
-  private readonly logger = new Logger();
+
   async register(dto: CreateUserDto) {
     try {
       const { password, ...user } = await this.userService.create({

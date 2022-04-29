@@ -1,5 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Permission } from 'src/permissions/entities/Permission';
 import { PermissionEntity } from 'src/permissions/entities/permission.entity';
 import { RoomsService } from 'src/rooms/rooms.service';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -44,7 +45,6 @@ export class TextService {
     const textIds = myPermissions.map((perm) => {
       return perm.text.id;
     });
-    console.log(textIds);
 
     const texts = await this.textRepository.findByIds(textIds);
 
@@ -64,7 +64,8 @@ export class TextService {
     }
     return find;
   }
-  async findByIdToEdit(textId: string, userId: number) {
+
+  async checkPermission(textId: string, userId: number): Promise<Permission> {
     const textData = await this.textRepository.findOne(textId, {
       relations: ['user'],
     });
@@ -79,7 +80,6 @@ export class TextService {
         where: { user: { id: userId }, text: { id: textId } },
         relations: ['user', 'text'],
       });
-      console.log(permission);
 
       if (!permission) {
         throw new NotFoundException('Текст не найден');
@@ -89,6 +89,18 @@ export class TextService {
     } else {
       userPermission = 'owner';
     }
+    return userPermission;
+  }
+
+  async findByIdToEdit(textId: string, userId: number) {
+    const textData = await this.textRepository.findOne(textId, {
+      relations: ['user'],
+    });
+
+    if (!textData) {
+      throw new NotFoundException('Текст не найден');
+    }
+    const userPermission = this.checkPermission(textId, userId);
 
     const roomData = await this.roomService.getRoomData(textId); //Берем данные из комнаты
 
