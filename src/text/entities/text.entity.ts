@@ -29,7 +29,10 @@ export class TextEntity {
   })
   previewUrl: string | null;
 
-  @ManyToOne(() => UserEntity, (user) => user.texts, { eager: true })
+  @ManyToOne(() => UserEntity, (user) => user.texts, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   user: UserEntity;
 
   @OneToMany(() => PermissionEntity, (permission) => permission.text, {

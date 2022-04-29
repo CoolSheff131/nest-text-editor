@@ -26,7 +26,7 @@ export class UserEntity {
   @Column({ nullable: true })
   password?: string;
 
-  @OneToMany(() => TextEntity, (text) => text.user)
+  @OneToMany(() => TextEntity, (text) => text.user, { onDelete: 'CASCADE' })
   texts: TextEntity[];
 
   @OneToMany(() => PermissionEntity, (permission) => permission.user)
