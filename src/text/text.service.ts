@@ -100,7 +100,7 @@ export class TextService {
     if (!textData) {
       throw new NotFoundException('Текст не найден');
     }
-    const userPermission = this.checkPermission(textId, userId);
+    const userPermission = await this.checkPermission(textId, userId);
 
     const roomData = await this.roomService.getRoomData(textId); //Берем данные из комнаты
 

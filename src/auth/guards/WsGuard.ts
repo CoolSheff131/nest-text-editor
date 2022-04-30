@@ -21,13 +21,18 @@ export class WsGuard implements CanActivate {
       const decoded = verify(bearerToken, 'test') as any;
       const cond = { email: decoded.email };
       return new Promise((resolve, reject) => {
-        return this.userService.findByCond(cond).then((user) => {
-          if (user) {
-            this.textService.checkPermission(textId, user.id);
-            resolve(user);
-          } else {
-            reject(false);
+        return this.userService.findByCond(cond).then(async (user) => {
+          if (!user) {
+            return reject(false);
           }
+          const permission = await this.textService.checkPermission(
+            textId,
+            user.id,
+          );
+          if (!permission) {
+            return reject(false);
+          }
+          resolve(user);
         });
       });
     } catch (ex) {
