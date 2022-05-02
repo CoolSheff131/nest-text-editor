@@ -21,9 +21,9 @@ export class RightAssignmentTokensController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('activate/:id')
-  activate(@User() userId: number, @Param('id') id: number) {
-    return this.rightAssignmentTokensService.activate(userId, id);
+  @Get('activate/:token')
+  activate(@User() userId: number, @Param('token') token: string) {
+    return this.rightAssignmentTokensService.activate(userId, token);
   }
   @Post()
   create(@Body() createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {

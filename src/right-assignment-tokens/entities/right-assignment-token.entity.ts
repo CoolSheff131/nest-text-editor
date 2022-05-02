@@ -16,7 +16,7 @@ export class RightAssignmentTokenEntity {
   id: number;
 
   @Column({
-    nullable: true,
+    unique: true,
   })
   token: string;
 

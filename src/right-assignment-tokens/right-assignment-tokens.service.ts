@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { CreateRightAssignmentTokenDto } from './dto/create-right-assignment-token.dto';
 import { UpdateRightAssignmentTokenDto } from './dto/update-right-assignment-token.dto';
 import { RightAssignmentTokenEntity } from './entities/right-assignment-token.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class RightAssignmentTokensService {
@@ -30,21 +31,27 @@ export class RightAssignmentTokensService {
   ) {}
 
   create(createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {
+    const token = uuidv4();
+
     return this.rightTokensRepository.save({
       permission: createRightAssignmentTokenDto.permission,
       text: { id: createRightAssignmentTokenDto.textId },
+      token,
     });
   }
 
-  async activate(userId: number, tokenId: number) {
-    const find = await this.rightTokensRepository.findOne(tokenId, {
+  async activate(userId: number, token: string) {
+    const rightAssignmentToken = await this.rightTokensRepository.findOne({
+      where: {
+        token,
+      },
       relations: ['text'],
     });
-    if (!find) {
+    if (!rightAssignmentToken) {
       throw new NotFoundException('Токен не найден');
     }
 
-    if (find.text.user.id == userId) {
+    if (rightAssignmentToken.text.user.id == userId) {
       throw new HttpException(
         'Пользователь владеет текстом!',
         HttpStatus.NOT_ACCEPTABLE,
@@ -53,11 +60,11 @@ export class RightAssignmentTokensService {
     const permission = await this.permissionRepository.find({
       where: {
         user: userId,
-        text: find.text,
+        text: rightAssignmentToken.text,
       },
     });
 
-    if (permission) {
+    if (permission.length !== 0) {
       throw new HttpException(
         'У вас уже активировано разрешение',
         HttpStatus.FORBIDDEN,
@@ -66,10 +73,10 @@ export class RightAssignmentTokensService {
 
     this.permissionRepository.save({
       user: { id: userId },
-      text: find.text,
-      permission: find.permission,
+      text: rightAssignmentToken.text,
+      permission: rightAssignmentToken.permission,
     });
-    return this.rightTokensRepository.delete(tokenId);
+    return this.rightTokensRepository.delete(rightAssignmentToken);
   }
 
   async findAll() {

@@ -22,7 +22,7 @@ import { join } from 'path';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'postgres-db',
+      host: 'localhost', //'postgres-db',
       port: 5432,
       username: 'texteditor',
       password: 'texteditor',
