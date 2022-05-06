@@ -66,6 +66,9 @@ export class TextService {
   }
 
   async checkPermission(textId: string, userId: number): Promise<Permission> {
+    console.log('checkPermission');
+    console.log(textId, userId);
+
     const textData = await this.textRepository.findOne(textId, {
       relations: ['user'],
     });
@@ -104,12 +107,7 @@ export class TextService {
 
     const roomData = await this.roomService.getRoomData(textId); //Берем данные из комнаты
 
-    if (!roomData.data) {
-      // Если данных в комнате нет, ставим из бд
-      roomData.data = textData;
-      this.roomService.setRoomData(textId, textData);
-    }
-    return { ...roomData, userPermission };
+    return { data: textData, ...roomData, userPermission };
   }
 
   async remove(id: number) {

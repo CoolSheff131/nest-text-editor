@@ -5,7 +5,6 @@ import { UserService } from 'src/user/user.service';
 
 interface Room {
   id: string;
-  data: TextEntity;
   usersId: Set<number>;
 }
 
@@ -18,7 +17,7 @@ export class RoomsService {
   findRoom(id: string): Room {
     let findedRoom: Room = this.rooms.find((room) => room.id === id);
     if (!findedRoom) {
-      findedRoom = { id, data: undefined, usersId: new Set() };
+      findedRoom = { id, usersId: new Set() };
       this.rooms.push(findedRoom);
     }
     return findedRoom;
@@ -37,10 +36,7 @@ export class RoomsService {
 
   joinUser(id: string, user: UserEntity) {
     const room = this.findRoom(id);
-    //console.log(user);
-
     room.usersId.add(user.id);
-    //console.log(room);
   }
 
   leftUser(id: string, leftUser: UserEntity) {
@@ -49,11 +45,5 @@ export class RoomsService {
     if (room.usersId.size == 0) {
       this.rooms = this.rooms.filter((r) => r.id !== room.id);
     }
-  }
-
-  setRoomData(id: string, data: any) {
-    const room = this.findRoom(id);
-    room.data = data;
-    return room;
   }
 }
