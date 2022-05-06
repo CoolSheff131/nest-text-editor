@@ -24,7 +24,10 @@ export class AppGateway {
     message: { textId: string; text: string },
   ): void {
     this.roomsService.setRoomData(message.textId, message.text);
-    this.wss.to(message.textId).emit('msgFromServer', message.text);
+
+    client.broadcast.to(message.textId).emit('msgFromServer', message.text);
+
+    //this.wss.broadcast.to(message.textId).emit('msgFromServer', message.text);
     //return {event: 'a',data: 'Hello world'};
   }
 
