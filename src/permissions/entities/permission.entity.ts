@@ -19,7 +19,9 @@ export class PermissionEntity {
   @Column()
   permission: Permission;
 
-  @ManyToOne(() => UserEntity, (user) => user.permissions)
+  @ManyToOne(() => UserEntity, (user) => user.permissions, {
+    onDelete: 'CASCADE',
+  })
   user: UserEntity;
 
   @ManyToOne(() => TextEntity, (text) => text.permissions, {
