@@ -66,9 +66,6 @@ export class TextService {
   }
 
   async checkPermission(textId: string, userId: number): Promise<Permission> {
-    console.log('checkPermission');
-    console.log(textId, userId);
-
     const textData = await this.textRepository.findOne(textId, {
       relations: ['user'],
     });

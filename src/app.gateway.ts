@@ -5,6 +5,7 @@ import {
   WebSocketServer,
   WsResponse,
 } from '@nestjs/websockets';
+import { userInfo } from 'os';
 import { Server, Socket } from 'socket.io';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { WsGuard } from './auth/guards/WsGuard';
@@ -41,6 +42,18 @@ export class AppGateway {
   }
 
   @UseGuards(WsGuard)
+  @SubscribeMessage('rangeChange')
+  handleSelectionUpdate(
+    client: Socket,
+    message: { textId: string; userId: string; range: any },
+  ): void {
+    client.broadcast.to(message.textId).emit('selectionChanged', {
+      userId: message.userId,
+      range: message.range,
+    });
+  }
+
+  @UseGuards(WsGuard)
   @SubscribeMessage('joinRoom')
   async handleJoin(
     client: Socket,
@@ -50,33 +63,26 @@ export class AppGateway {
 
     this.roomsService.joinUser(message.textId, message.user);
     client.broadcast.to(message.textId).emit('sendDataToJoinedUser');
-    console.log('join');
-    console.log(message.textId);
 
     const roomData = await this.roomsService.getRoomData(message.textId);
 
     if (roomData.users.length == 1) {
-      console.log('123');
-
       const text = await this.textService.findByIdToEdit(
         message.textId,
         message.user.id,
       );
-      console.log(text);
-
-      console.log('321');
       this.wss.to(message.textId).emit('getTextInRoom', text.data);
     }
 
-    this.wss.to(message.textId).emit('joinedRoom', roomData.users);
+    this.wss
+      .to(message.textId)
+      .emit('joinedRoom', { users: roomData.users, userJoined: message.user });
   }
 
   @UseGuards(WsGuard)
   @SubscribeMessage('sendTextInRoom')
   async handleSendToJoined(client: Socket, message: { text: TextEntity }) {
     let text = message.text;
-    console.log(message);
-
     this.wss.to('' + message.text.id).emit('getTextInRoom', text);
   }
 
@@ -89,6 +95,8 @@ export class AppGateway {
     client.leave(message.textId);
     this.roomsService.leftUser(message.textId, message.user);
     const roomData = await this.roomsService.getRoomData(message.textId);
-    this.wss.to(message.textId).emit('leftRoom', roomData.users);
+    this.wss
+      .to(message.textId)
+      .emit('leftRoom', { users: roomData.users, leftUser: message.user });
   }
 }
