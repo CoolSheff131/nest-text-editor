@@ -26,4 +26,7 @@ export class RightAssignmentTokenEntity {
 
   @Column()
   permission: Permission;
+
+  @Column({ default: false, nullable: false })
+  isConstant: boolean;
 }

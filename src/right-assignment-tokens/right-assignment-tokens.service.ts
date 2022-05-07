@@ -12,6 +12,7 @@ import { CreateRightAssignmentTokenDto } from './dto/create-right-assignment-tok
 import { UpdateRightAssignmentTokenDto } from './dto/update-right-assignment-token.dto';
 import { RightAssignmentTokenEntity } from './entities/right-assignment-token.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { isRFC3339 } from 'class-validator';
 
 @Injectable()
 export class RightAssignmentTokensService {
@@ -30,14 +31,32 @@ export class RightAssignmentTokensService {
     private textRepository: Repository<TextEntity>,
   ) {}
 
-  create(createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {
+  async create(createRightAssignmentTokenDto: CreateRightAssignmentTokenDto) {
     const token = uuidv4();
-
-    return this.rightTokensRepository.save({
-      permission: createRightAssignmentTokenDto.permission,
-      text: { id: createRightAssignmentTokenDto.textId },
-      token,
-    });
+    const textId = createRightAssignmentTokenDto.textId;
+    const permission = createRightAssignmentTokenDto.permission;
+    if (createRightAssignmentTokenDto.isConstant) {
+      const rightAssignment = await this.rightTokensRepository.findOne({
+        where: { text: { id: textId }, isConstant: true, permission },
+      });
+      if (!rightAssignment) {
+        await this.rightTokensRepository.save({
+          permission: permission,
+          text: { id: textId },
+          token,
+          isConstant: true,
+        });
+      } else {
+        this.rightTokensRepository.update(rightAssignment, { token });
+      }
+    } else
+      await this.rightTokensRepository.save({
+        permission: permission,
+        text: { id: textId },
+        token,
+        isConstant: false,
+      });
+    return;
   }
 
   async activate(userId: number, token: string) {
@@ -76,7 +95,10 @@ export class RightAssignmentTokensService {
       text: rightAssignmentToken.text,
       permission: rightAssignmentToken.permission,
     });
-    return this.rightTokensRepository.delete(rightAssignmentToken);
+    if (!rightAssignmentToken.isConstant) {
+      this.rightTokensRepository.delete(rightAssignmentToken);
+    }
+    return;
   }
 
   async findAll() {
