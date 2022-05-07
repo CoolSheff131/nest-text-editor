@@ -32,6 +32,15 @@ export class AppGateway {
   }
 
   @UseGuards(WsGuard)
+  @SubscribeMessage('updateTitle')
+  handleTitleUpdate(
+    client: Socket,
+    message: { textId: string; title: string },
+  ): void {
+    client.broadcast.to(message.textId).emit('updatedTitle', message.title);
+  }
+
+  @UseGuards(WsGuard)
   @SubscribeMessage('joinRoom')
   async handleJoin(
     client: Socket,
