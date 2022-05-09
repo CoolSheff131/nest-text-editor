@@ -28,9 +28,4 @@ export class PermissionEntity {
     onDelete: 'CASCADE',
   })
   text: TextEntity;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
-  @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date;
 }
